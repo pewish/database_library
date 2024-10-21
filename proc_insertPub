@@ -1,0 +1,21 @@
+USE [Library]
+GO
+/****** Object:  StoredProcedure [dbo].[InsertPub]    Script Date: 21.12.2022 17:58:57 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[InsertPub]
+	@name_publisher varchar(50), @year_found int, @check int OUTPUT
+AS
+BEGIN
+	IF EXISTS (SELECT name_publisher FROM Publisher WHERE name_publisher = @name_publisher) BEGIN
+		SET @check = 1
+	END ELSE BEGIN
+		DECLARE @id_publisher int
+		SELECT @id_publisher = MAX(id_publisher) FROM Publisher
+		SET @id_publisher = @id_publisher + 1
+		INSERT INTO Publisher VALUES(@id_publisher, @name_publisher, @year_found, 'нет')
+		SET @check = 0
+	END
+END
