@@ -1,0 +1,17 @@
+USE [Library]
+GO
+/****** Object:  StoredProcedure [dbo].[CreateSotr]    Script Date: 21.12.2022 15:40:40 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[UpdateSotr]
+	@FIO_sotr varchar(50), @bday date, @experience int, @position varchar(50), 
+	@phone_num varchar(30), @email varchar(50),@fired varchar(3), @check int OUTPUT
+AS
+BEGIN
+	DECLARE @id_sotr int
+	UPDATE Sotr SET bday = @bday, experience = @experience, position = @position, phone_num = @phone_num, 
+	email = @email, fired = @fired WHERE FIO_sotr = @FIO_sotr
+	SET @check = 0
+END
