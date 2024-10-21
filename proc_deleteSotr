@@ -1,0 +1,28 @@
+USE [Library]
+GO
+/****** Object:  StoredProcedure [dbo].[DeleteBook]    Script Date: 21.12.2022 11:39:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[DeleteBook]
+	@id_book int, @check int OUTPUT
+AS
+BEGIN
+	IF NOT EXISTS (SELECT id_book FROM Book WHERE id_book = @id_book)
+	BEGIN
+		SET @check = 1
+		RETURN
+	END
+	IF (SELECT availability FROM Book WHERE id_book = @id_book) = 'нет'
+	BEGIN
+		SET @check = 2
+		RETURN
+	END
+	IF (SELECT del FROM Book WHERE id_book = @id_book) = 'да' BEGIN
+		SET @check = 3
+		RETURN
+	END
+	UPDATE Book SET del = 'да' WHERE id_book = @id_book
+	SET @check = 0
+END
