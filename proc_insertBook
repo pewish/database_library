@@ -1,0 +1,23 @@
+USE [Library]
+GO
+/****** Object:  StoredProcedure [dbo].[InsertBook]    Script Date: 21.12.2022 18:00:47 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[InsertBook]
+	@book_name varchar(50), @author varchar(50), @publisher varchar(50), @public_year int, @description varchar(1024),
+	@genre varchar(50), @section varchar(50), @ISBN varchar(18), @check int OUTPUT
+AS
+BEGIN
+	IF EXISTS (SELECT ISBN FROM Book WHERE ISBN LIKE @ISBN) BEGIN
+		SET @check = 1
+	END ELSE BEGIN
+		DECLARE @id_book int, @av varchar(10)
+		SELECT @id_book = MAX(id_book) FROM Book
+		SET @id_book = @id_book + 1
+		SET @av = 'да'
+		INSERT INTO Book VALUES(@id_book, @book_name, @author, @publisher, @public_year, @description, @genre, @section, @ISBN, @av, 'нет')
+		SET @check = 0
+	END
+END
