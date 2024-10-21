@@ -1,0 +1,26 @@
+USE [Library]
+GO
+/****** Object:  StoredProcedure [dbo].[FireSotr]    Script Date: 18.12.2022 21:12:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[FireSotr]
+	@id_sotr int, @check int OUTPUT
+AS
+BEGIN
+	IF NOT EXISTS(SELECT id_sotr FROM Sotr WHERE id_sotr = @id_sotr) BEGIN
+		SET @check = 1
+		RETURN
+	END
+	IF EXISTS(SELECT id_sotr FROM Sotr WHERE id_sotr = @id_sotr) BEGIN
+		IF (SELECT fired FROM Sotr WHERE id_sotr = @id_sotr) = 'да' BEGIN
+			SET @check = 2
+			RETURN
+		END
+		IF (SELECT fired FROM Sotr WHERE id_sotr = @id_sotr) = 'нет' BEGIN
+			UPDATE Sotr SET fired = 'да' WHERE id_sotr = @id_sotr
+			SET @check = 0
+		END
+	END
+END
